@@ -1,10 +1,10 @@
 UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)
-LIBS=-framework OpenGL -framework GLUT
+LDFLAGS=-framework OpenGL -framework GLUT
 else
-LIBS=-lglut
+LDFLAGS=-lglut
 endif
 
-CFLAGS=-O -Wall -Werror -Wextra -pedantic -std=c99 $(LIBS)
+CFLAGS=-O -Wall -Werror -Wextra -pedantic -std=c99
 
 all: main
