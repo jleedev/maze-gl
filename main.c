@@ -27,7 +27,24 @@ struct {
 void render(void) {
 	glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
+	glCullFace(GL_BACK);
+	glPolygonMode(GL_FRONT, GL_FILL);
 	glCallList(graphics.maze);
+
+	glColor4f(0.0f, 0.0f, 1.0f, 0.25f);
+	glCullFace(GL_FRONT);
+	glPolygonMode(GL_BACK, GL_FILL);
+	glCallList(graphics.maze);
+
+	glDisable(GL_CULL_FACE);
+	glColor3f(0.0f, 0.0f, 0.0f);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glLineWidth(1);
+	glCallList(graphics.maze);
+	glEnable(GL_CULL_FACE);
+
 	glutSwapBuffers();
 }
 
@@ -88,7 +105,7 @@ void renderMaze() {
 }
 
 void init(void) {
-	game.maze = maze_new(4, 5);
+	game.maze = maze_new(8, 10);
 
 	graphics.maze = glGenLists(1);
 	glNewList(graphics.maze, GL_COMPILE);
@@ -97,9 +114,21 @@ void init(void) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, 4./3, 60, 100);
+	gluPerspective(60, 4./3, 10, 100);
 	glMatrixMode(GL_MODELVIEW);
-	glTranslatef(0, 0, -80);
+	glLoadIdentity();
+	glTranslatef(-4.5, 0, -20);
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_POLYGON_SMOOTH);
+	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 }
 
 int main(int argc, char **argv) {
