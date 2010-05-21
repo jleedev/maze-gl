@@ -24,9 +24,44 @@ struct {
 	} player;
 } game;
 
+void renderAxes() {
+	glLineWidth(2);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 0);
+	glVertex3f(1, 0, 0);
+	glEnd();
+
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 1, 0);
+	glEnd();
+
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0, 0);
+	glVertex3f(0, 0, 1);
+	glEnd();
+
+	glLineWidth(1);
+}
+
 void render(void) {
 	glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glCullFace(GL_BACK);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glBegin(GL_QUADS);
+	glVertex3f(0, 0, 0);
+	glVertex3f(8, 0, 0);
+	glVertex3f(8, 0, -10);
+	glVertex3f(0, 0, -10);
+	glEnd();
+
+	renderAxes();
 
 	glColor4f(1.0f, 0.0f, 0.0f, 0.25f);
 	glCullFace(GL_BACK);
@@ -54,7 +89,7 @@ void update(int value) {
 	glutPostRedisplay();
 }
 
-void renderWall(unsigned row, unsigned col, walls dir) {
+void renderWall(int row, int col, walls dir) {
 	glBegin(GL_QUADS);
 	switch (dir) {
 		case NORTH:
@@ -114,10 +149,10 @@ void init(void) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, 4./3, 10, 100);
+	gluPerspective(60, 4./3, 0.1, 50);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(-4.5, 0, -20);
+	gluLookAt(4, 6, 5, 4, 0, -5, 0, 1, 0);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
