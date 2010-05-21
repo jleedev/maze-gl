@@ -6,17 +6,16 @@
 
 #include "maze.h"
 
-#define NORTH 1
-#define EAST  2
-#define SOUTH 4
-#define WEST  8
-
 struct _cell {
-	unsigned char walls;
+	walls walls;
 };
 
 void cell_init(cell *c) {
 	c->walls = NORTH | EAST | SOUTH | WEST;
+}
+
+walls cell_get_walls(cell *c) {
+	return c->walls;
 }
 
 struct _maze {
@@ -27,6 +26,14 @@ struct _maze {
 
 cell *maze_get_cell(maze *m, unsigned row, unsigned col) {
 	return m->cells + m->cols*row + col;
+}
+
+unsigned maze_get_rows(maze *m) {
+	return m->rows;
+}
+
+unsigned maze_get_cols(maze *m) {
+	return m->cols;
 }
 
 maze *maze_new(unsigned rows, unsigned cols) {
@@ -45,10 +52,13 @@ maze *maze_new(unsigned rows, unsigned cols) {
 
 void maze_generate(maze *m) {
 	// FIXME fake maze generation for now.
+	// However, it still removes two walls each.
 	for (unsigned row = 0; row < m->rows; row++) {
 		for (unsigned col = 0; col < m->cols; col++) {
-			maze_get_cell(m, row, col)->walls &=
-				~(1 << (random() % 4));
+			int x = random() % 4;
+			int y = (x + 1) % 4;
+			maze_get_cell(m, row, col)->walls &= ~(1 << x);
+			maze_get_cell(m, row, col)->walls &= ~(1 << y);
 		}
 	}
 }
